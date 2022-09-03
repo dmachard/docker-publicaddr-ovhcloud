@@ -1,0 +1,26 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish-dockerhub:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build the Docker image
+      run: |
+        docker build . --file Dockerfile -t publicaddr-ovhcloud
+
+    - name: Tag image
+      run: |
+        docker tag publicaddr-ovhcloud dmachard/publicaddr-ovhcloud:${{ github.event.release.tag_name }}
+        docker tag publicaddr-ovhcloud dmachard/publicaddr-ovhcloud:latest
+
+    - name: Upload to DockerHub
+      run: |
+        docker login -u ${{ secrets.DOCKERHUB_LOGIN }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+        docker push dmachard/publicaddr-ovhcloud:latest
+        docker push dmachard/publicaddr-ovhcloud:${{ github.event.release.tag_name }}

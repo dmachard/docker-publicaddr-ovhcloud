@@ -1,0 +1,1 @@
+from publicaddr_ovhcloud.monitor import start_monitor
