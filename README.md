@@ -19,7 +19,7 @@ Container environment variables
 | PUBLICADDR_OVHCLOUD_UPDATE | delay between check, default is 3600s |
 | PUBLICADDR_OVHCLOUD_ZONE | dns zone to update |
 | PUBLICADDR_OVHCLOUD_SUBDOMAINS | list of subdomains to udpate |
-| PUBLICADDR_OVHCLOUD_ENDPOINT | ovh consumer key |
+| PUBLICADDR_OVHCLOUD_ENDPOINT | ovh endpoint, default is ovh-eu |
 | PUBLICADDR_OVHCLOUD_APPLICATION_KEY | ovh application key |
 | PUBLICADDR_OVHCLOUD_APPLICATION_SECRET | ovh application secret |
 | PUBLICADDR_OVHCLOUD_CONSUMER_KEY | ovh consumer key |

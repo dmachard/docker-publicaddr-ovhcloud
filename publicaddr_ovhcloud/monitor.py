@@ -57,35 +57,38 @@ def setup_logger(debug):
     logger.addHandler(lh)
 
 def start_monitor():
+    # default values
     debug = False
     delay_every = 3600
+    ovh_ep= "ovh-eu"
 
     # read environment variables
-    debug_str = os.getenv('PUBLICADDR_OVHCLOUD_DEBUG')
-    if debug_str is not None:
-        debug = bool( int(debug_str) )
+    debug_env = os.getenv('PUBLICADDR_OVHCLOUD_DEBUG')
+    if debug_env is not None:
+        debug = bool( int(debug_env) )
 
     # enable logger
     setup_logger(debug=debug)
 
-    delay = os.getenv('PUBLICADDR_OVHCLOUD_UPDATE')
-    if delay is not None:
-        delay_every = int(delay)
+    delay_env = os.getenv('PUBLICADDR_OVHCLOUD_UPDATE')
+    if delay_env is not None:
+        delay_every = int(delay_env)
+
+    subdomains_env = os.getenv('PUBLICADDR_OVHCLOUD_SUBDOMAINS')
+    if subdomains_env is None:
+        logger.error("missing env variable PUBLICADDR_OVHCLOUD_SUBDOMAINS")
+        sys.exit(1)
+    subdomains = subdomains_env.split(",")
+
+    ovh_ep_env = os.getenv('PUBLICADDR_OVHCLOUD_ENDPOINT')
+    if ovh_ep_env is None:
+        logger.error("missing env variable PUBLICADDR_OVHCLOUD_ENDPOINT")
+        sys.exit(1)
+    ovh_ep = ovh_ep_env
 
     zone = os.getenv('PUBLICADDR_OVHCLOUD_ZONE')
     if zone is None:
         logger.error("missing env variable PUBLICADDR_OVHCLOUD_ZONE")
-        sys.exit(1)
-
-    subdomains_str = os.getenv('PUBLICADDR_OVHCLOUD_SUBDOMAINS')
-    if subdomains_str is None:
-        logger.error("missing env variable PUBLICADDR_OVHCLOUD_SUBDOMAINS")
-        sys.exit(1)
-    subdomains = subdomains_str.split(",")
-
-    ovh_ep = os.getenv('PUBLICADDR_OVHCLOUD_ENDPOINT')
-    if ovh_ep is None:
-        logger.error("missing env variable PUBLICADDR_OVHCLOUD_ENDPOINT")
         sys.exit(1)
 
     ovh_ak = os.getenv('PUBLICADDR_OVHCLOUD_APPLICATION_KEY')
@@ -105,7 +108,8 @@ def start_monitor():
 
     # run the monitor
     try:
-        asyncio.run(monitor(every=delay_every, zone=zone, subdomains=subdomains,
+        asyncio.run(monitor(every=delay_every, 
+                            zone=zone, subdomains=subdomains,
                             ovh_ep=ovh_ep, ovh_ak=ovh_ak, 
                             ovh_as=ovh_as, 
                             ovh_ck=ovh_ck))
