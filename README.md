@@ -1,11 +1,10 @@
-# publicaddr-ovhcloud
+# What is this?
 
 Docker image to publish your public IPv4 and V6 addresses to a list of OVH domains.
 
-# Get your OVH credentials
+## Get your OVH credentials
 
-Before to start, you need to create [OVH API Keys](https://eu.api.ovh.com/createToken).
-Fill the OVHcloud page like [example](./doc/ovh_token.png) and you will be issued three keys:
+Before to start, you need to create [OVH API Keys](https://eu.api.ovh.com/createToken) with the following [example](./doc/ovh_token.png) and you will be issued three keys:
 - the application key
 - your secret application key
 - a secret consumer key
