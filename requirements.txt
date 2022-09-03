@@ -1,2 +1,2 @@
-publicaddr==0.6.0
+publicaddr==0.6.1
 ovh==1.0.0
