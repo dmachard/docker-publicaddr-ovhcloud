@@ -30,7 +30,7 @@ sudo docker build . --file Dockerfile -t publicaddr-ovhcloud
 | PUBLICADDR_OVHCLOUD_DEBUG | debug mode 1 or 0 |
 | PUBLICADDR_OVHCLOUD_UPDATE | delay between check, default is 3600s |
 | PUBLICADDR_OVHCLOUD_ZONE | dns zone to update |
-| PUBLICADDR_OVHCLOUD_SUBDOMAINS | list of subdomains to udpate |
+| PUBLICADDR_OVHCLOUD_SUBDOMAINS | list of subdomains to update, comma separated |
 | PUBLICADDR_OVHCLOUD_ENDPOINT | ovh endpoint, default is ovh-eu |
 | PUBLICADDR_OVHCLOUD_APPLICATION_KEY | ovh application key |
 | PUBLICADDR_OVHCLOUD_APPLICATION_SECRET | ovh application secret |
