@@ -1,11 +1,6 @@
 
 import ovh
 
-# endpoint="ovh-eu",
-# application_key="ea14759595179838",
-# application_secret="7bf577ffa9dd079162cd547f648389d8",
-# consumer_key="b3d978df52310a6ae764d088e0f1b0a3",
-
 class Client():
     def __init__(self, endpoint, application_key, application_secret, consumer_key):
         """constructor"""
