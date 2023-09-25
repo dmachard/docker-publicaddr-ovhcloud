@@ -12,7 +12,7 @@ Before to start, you need to create [OVH API Keys](https://eu.api.ovh.com/create
 ## Docker run
 
 ```
-sudo docker run -d --env-file ./env.list --name=mon publicaddr-ovhcloud:latest
+sudo docker run -d --env-file ./env.list --name=mon dmachard/publicaddr-ovhcloud:latest
 ```
 
 ## Docker build
