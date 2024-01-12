@@ -23,9 +23,9 @@ async def monitor(every, zone, subdomains, ovh_ep, ovh_ak, ovh_as, ovh_ck, has_i
     while True:
         try:
             if has_ipv6:
-                publicip = publicaddr.lookup(ip=publicaddr.IPv6)
-            else:
                 publicip = publicaddr.lookup()
+            else:
+                publicip = publicaddr.lookup(ip=publicaddr.IPv4)
             logger.debug("current ip4=%s ip6=%s" % (cur_ip4, cur_ip6))
             logger.debug("your public ip4=%s ip6=%s" % (publicip["ip4"], publicip["ip6"]))
 
