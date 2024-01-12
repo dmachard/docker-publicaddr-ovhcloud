@@ -28,6 +28,7 @@ sudo docker build . --file Dockerfile -t publicaddr-ovhcloud
 | Variables | Description |
 | ------------- | ------------- |
 | PUBLICADDR_OVHCLOUD_DEBUG | debug mode 1 or 0 |
+| PUBLICADDR_OVHCLOUD_HAS_IPV6 | 1 or 0 |
 | PUBLICADDR_OVHCLOUD_UPDATE | delay between check, default is 3600s |
 | PUBLICADDR_OVHCLOUD_ZONE | dns zone to update |
 | PUBLICADDR_OVHCLOUD_SUBDOMAINS | list of subdomains to update, comma separated |
