@@ -1,0 +1,3 @@
+import publicaddr_ovhcloud
+
+publicaddr_ovhcloud.start_monitor()
