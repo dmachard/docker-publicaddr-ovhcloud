@@ -69,6 +69,7 @@ async def monitor(every, zone, subdomains, ovh_ep, ovh_ak, ovh_as, ovh_ck, has_i
             await asyncio.wait_for(start_shutdown.wait(), timeout=every)
         except asyncio.TimeoutError:
             pass
+
 def setup_logger(debug):
     loglevel = logging.DEBUG if debug else logging.INFO
     logfmt = '%(asctime)s %(levelname)s %(message)s'
@@ -191,6 +192,6 @@ def start_monitor():
     try:
        loop.run_forever()
     finally:
-        loop.close()
+       loop.close()
     
     logger.debug("app terminated")
