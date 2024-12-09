@@ -1,4 +1,4 @@
-FROM python:3.13.0-alpine
+FROM python:3.13.1-alpine
 
 LABEL name="Python PublicAddr Updater for OVHcloud" \
       description="Python PublicAddr Updater for OVHcloud" \
