@@ -11,8 +11,6 @@ from dotenv import load_dotenv
 from publicaddr_ovhcloud import ovhapi
 
 logger = logging.getLogger("monitor")
-loop = asyncio.get_event_loop()
-shutdown_task = None
 
 async def monitor(every, zone, subdomains, ovh_ep, ovh_ak, ovh_as, ovh_ck, has_ipv6, use_protocol, start_shutdown):
     cur_ip4 = "127.0.0.1"
@@ -83,7 +81,7 @@ def setup_logger(debug):
     
     logger.addHandler(lh)
 
-async def shutdown(signal, loop, start_shutdown):
+async def shutdown_handler(start_shutdown):
     """perform graceful shutdown"""
     logger.debug("starting shutting down process")
     start_shutdown.set()
@@ -96,15 +94,38 @@ async def shutdown(signal, loop, start_shutdown):
 
     logger.debug("waiting for all tasks to exit")
     await asyncio.gather(*tasks, return_exceptions=True)
+    logger.debug("all tasks have exited")
 
-    logger.debug("all tasks have exited, stopping event loop")
-    loop.stop()
+async def main_async(delay_every, zone, subdomains, ovh_ep, ovh_ak, ovh_as, ovh_ck, has_ipv6, use_protocol):
+    start_shutdown = asyncio.Event()
+    loop = asyncio.get_running_loop()
+
+    # prepare shutdown handling
+    start_shutdown = asyncio.Event()
+    for sig in (signal.SIGHUP, signal.SIGTERM, signal.SIGINT):
+        loop.add_signal_handler(sig, lambda: asyncio.create_task(
+            shutdown_handler(start_shutdown)
+        ))
+
+    # run monitor
+    await monitor(
+                every=delay_every, 
+                zone=zone, 
+                subdomains=subdomains,
+                ovh_ep=ovh_ep, 
+                ovh_ak=ovh_ak, 
+                ovh_as=ovh_as, 
+                ovh_ck=ovh_ck,
+                has_ipv6=has_ipv6,
+                use_protocol=use_protocol,
+                start_shutdown=start_shutdown
+            )
 
 def start_monitor():
     # default values
     debug = False
     delay_every = 3600
-    ovh_ep= "ovh-eu"
+    ovh_ep = "ovh-eu"
     has_ipv6 = True
 
     # read config from environnement file ?
@@ -118,14 +139,14 @@ def start_monitor():
     # read environment variables
     debug_env = os.getenv('PUBLICADDR_OVHCLOUD_DEBUG')
     if debug_env is not None:
-        debug = bool( int(debug_env) )
+        debug = bool(int(debug_env))
 
     # enable logger
     setup_logger(debug=debug)
 
     has_ipv6_env = os.getenv('PUBLICADDR_OVHCLOUD_HAS_IPV6')
     if has_ipv6_env is not None:
-        has_ipv6 = bool( int(has_ipv6_env) )
+        has_ipv6 = bool(int(has_ipv6_env))
 
     use_protocol = os.getenv('PUBLICADDR_OVHCLOUD_USE_PROTOCOL')
 
@@ -165,33 +186,12 @@ def start_monitor():
         logger.error("missing env variable PUBLICADDR_OVHCLOUD_CONSUMER_KEY")
         sys.exit(1)
 
-    # prepare shutdown handling
-    start_shutdown = asyncio.Event()
-    for sig in (signal.SIGHUP, signal.SIGTERM, signal.SIGINT):
-        loop.add_signal_handler(sig, lambda: asyncio.create_task(
-            shutdown(sig, loop, start_shutdown)
-        ))
-
-    # run monitor
-    loop.create_task(
-                    monitor(
-                        every=delay_every, 
-                        zone=zone, 
-                        subdomains=subdomains,
-                        ovh_ep=ovh_ep, 
-                        ovh_ak=ovh_ak, 
-                        ovh_as=ovh_as, 
-                        ovh_ck=ovh_ck,
-                        has_ipv6=has_ipv6,
-                        use_protocol=use_protocol,
-                        start_shutdown=start_shutdown
-                        )
-                    )
-
-    # run event loop 
+    # Run the async main function
     try:
-       loop.run_forever()
-    finally:
-       loop.close()
+        asyncio.run(main_async(
+            delay_every, zone, subdomains, ovh_ep, ovh_ak, ovh_as, ovh_ck, has_ipv6, use_protocol
+        ))
+    except KeyboardInterrupt:
+        logger.info("Received keyboard interrupt")
     
     logger.debug("app terminated")

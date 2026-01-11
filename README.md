@@ -22,6 +22,7 @@ Build docker image
 
 ```bash
 sudo docker build . --file Dockerfile -t publicaddr-ovhcloud
+sudo docker run -d --env-file ./env.list --name=publicaddr-ovh publicaddr-ovhcloud
 ```
 
 ## Environment variables
